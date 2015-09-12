@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/general_category">
+        <CheckBoxPreference
+            android:id="@+id/military_time_pref"
+            android:title="@string/military_time"
+            android:summary="@string/military_time_summary"
+            android:defaultValue="false"/>
+
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/vibration_category">
+
+        <com.enayet.bendroid.numberSeekerPreference
+            android:id="@+id/vibration_pref"
+            android:title="@string/vibration_intensity"
+            android:summary="@string/vibration_intensity_summary"
+            android:inputType="number"
+            android:defaultValue="50"
+            />
+
+        <CheckBoxPreference
+            android:id="@+id/vibration_frequency_pref"
+            android:title="@string/vibration_frequency"
+            android:summary="@string/vibration_frequency_summary"/>
+            <!--android:dependency="@+id/military_time_pref"-->
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
