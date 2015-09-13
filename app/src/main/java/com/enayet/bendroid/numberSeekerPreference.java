@@ -42,7 +42,7 @@ public class numberSeekerPreference extends DialogPreference {
     protected void onCreateDialog() {
         //TODO: figure out how to bind TextView to value of seekbar
     }*/
-    
+
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         // When the user selects "OK", persist the new value
