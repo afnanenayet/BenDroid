@@ -27,8 +27,7 @@
         </activity>
 
         <service
-            android:name=".chimeService"
-            android:enabled="true"
+            android:name=".BenService"
             android:exported="false"></service>
     </application>
 

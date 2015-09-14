@@ -8,7 +8,8 @@
     <string name="action_about">About</string>
     <string name="dialog_about_title">About</string>
     <string name="dialog_about_message">This app will vibrate at a specified time interval like a grandfather clock. You can set how many times it \"chimes\" and when it does.</string>
-<!--Preferences-->
+    <string name="service_terminated">BenDroid successfully quit</string>
+    <!--Preferences-->
     <string name="vibration_category">Vibration</string>
     <string name="vibration_intensity">Vibration intensity</string>
     <string name="vibration_intensity_summary">Control how strongly you want your phone to vibrate for each "chime"</string>
