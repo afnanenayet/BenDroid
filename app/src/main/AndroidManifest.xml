@@ -28,7 +28,15 @@
 
         <service
             android:name=".BenService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
+
+        <uses-permission android:name="android.permission.VIBRATE"/>
     </application>
 
 </manifest>

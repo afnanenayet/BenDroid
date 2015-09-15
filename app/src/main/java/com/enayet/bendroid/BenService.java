@@ -40,6 +40,10 @@ public class BenService extends IntentService {
         context.startService(intent);
     }
 
+    public void onCreate() {
+
+    }
+
     /**
      * Starts this service to perform action Baz with the given parameters. If
      * the service is already performing a task this action will be queued.
