@@ -11,8 +11,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        intent.getIntExtra(); //get int from intent, use that as vibration length
-        Vibrator mVibrator = (Vibrator) this.context.getSystemService(Context.VIBRATOR_SERVICE);
-        mVibrator.vibrate(500); //vibrate for milliseconds specified in argument
+        //intent.getIntExtra("vibrationDuration", 1); //TODO get int from intent, use that as vibration length
+        Vibrator mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator.vibrate(500); //vibrate for milliseconds specified in argument TODO change duration to variable
     }
 }

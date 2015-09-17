@@ -1,5 +1,7 @@
 package com.enayet.bendroid;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +10,18 @@ import android.view.MenuItem;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private PendingIntent mPendingIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
+
+        //Intent to set up Alarm service
+        Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
+        mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent, 0);
     }
 
     @Override
@@ -43,5 +51,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setAlarm() {
+
     }
 }
