@@ -9,6 +9,8 @@
     <string name="dialog_about_title">About</string>
     <string name="dialog_about_message">This app will vibrate at a specified time interval like a grandfather clock. You can set how many times it \"chimes\" and when it does.</string>
     <string name="service_terminated">BenDroid successfully quit</string>
+    <string name="vibration_toast">Check the time!</string>
+    <string name="stop_menu_title">Stop</string>
     <!--Preferences-->
     <string name="vibration_category">Vibration</string>
     <string name="vibration_intensity">Vibration intensity</string>
@@ -19,4 +21,6 @@
     <string name="military_time">Use military time</string>
     <string name="military_time_summary">If selected, device will ring with military time. Otherwise, there will be no differentiation between A.M. and P.M.</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="exact_pref_title">Exact timing</string>
+    <string name="exact_pref_summary">Whether you want the vibrations to be exactly at whichever time interval you choose. This is more accurate with respect to time. If unchecked, the device will vibrate at a general approximation of the interval.</string>
 </resources>

@@ -4,27 +4,32 @@
         android:title="@string/general_category">
         <CheckBoxPreference
             android:id="@+id/military_time_pref"
-            android:title="@string/military_time"
+            android:defaultValue="false"
             android:summary="@string/military_time_summary"
-            android:defaultValue="false"/>
+            android:title="@string/military_time" />
 
-
+        <CheckBoxPreference
+            android:id="@+id/exact_time_pref"
+            android:defaultValue="false"
+            android:summary="@string/exact_pref_summary"
+            android:title="@string/exact_pref_title" />
     </PreferenceCategory>
+
     <PreferenceCategory
         android:title="@string/vibration_category">
 
         <com.enayet.bendroid.numberSeekerPreference
             android:id="@+id/vibration_pref"
-            android:title="@string/vibration_intensity"
-            android:summary="@string/vibration_intensity_summary"
-            android:inputType="number"
             android:defaultValue="50"
+            android:inputType="number"
+            android:summary="@string/vibration_intensity_summary"
+            android:title="@string/vibration_intensity"
             />
 
         <CheckBoxPreference
             android:id="@+id/vibration_frequency_pref"
-            android:title="@string/vibration_frequency"
-            android:summary="@string/vibration_frequency_summary"/>
+            android:summary="@string/vibration_frequency_summary"
+            android:title="@string/vibration_frequency" />
             <!--android:dependency="@+id/military_time_pref"-->
 
 
