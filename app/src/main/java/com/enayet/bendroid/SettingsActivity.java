@@ -4,7 +4,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,7 +17,7 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends PreferenceActivity {
 
     private PendingIntent mPendingIntent;
 
@@ -34,6 +37,15 @@ public class SettingsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_settings, menu);
         return true;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        .getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(getApplicationContext());
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -57,9 +69,18 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
+            //TODO: add listener implementation
+        }
+    };
+    mPrefs.registerOnSharedPreferenceChangeListener(listener);
+
+
     public void setAlarm() {
         Log.i("BenDroid/Settings", "SetAlarm called successfully");
         Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
+        mAlarmIntent.putExtra("singleVibration", false); //TODO: tie this to preferences
         mAlarmIntent.putExtra("vibrationDuration", 500); //passing vibration duration to alarm receiver
         mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
