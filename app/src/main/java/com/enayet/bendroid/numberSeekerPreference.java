@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.view.View;
+import android.util.Log;
 
 /**
  * Created by aenayet on 8/30/15.
@@ -17,7 +17,13 @@ public class numberSeekerPreference extends DialogPreference {
         setDialogLayoutResource(R.layout.number_seeker_layout);
         setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);
+        setPersistent(false);
         setDialogIcon(null);
+    }
+
+    @Override
+    public void setPersistent(boolean persistent) {
+        super.setPersistent(persistent);
     }
 
     @Override
@@ -38,15 +44,12 @@ public class numberSeekerPreference extends DialogPreference {
         return a.getInteger(index, DEFAULT_ORDER);
     }
 
-    /*@Override
-    protected void onCreateDialog() {
-        //TODO: figure out how to bind TextView to value of seekbar
-    }*/
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         // When the user selects "OK", persist the new value
         if (positiveResult) {
+            Log.i("seekerPreference", "persistInt method called");
             persistInt(R.id.seekBarPref); //gets value of seekbarpreference
         }
     }

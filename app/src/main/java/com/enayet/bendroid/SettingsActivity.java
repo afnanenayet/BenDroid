@@ -1,13 +1,14 @@
 package com.enayet.bendroid;
 
 import android.app.AlarmManager;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,16 +18,46 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-public class SettingsActivity extends PreferenceActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     private PendingIntent mPendingIntent;
+    SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
+            SettingsActivity mActivity = new SettingsActivity();
+            mActivity.setAlarm();
+
+            switch (key) {
+
+                case ("military_time_pref"):
+                    Log.i("Preferences", "Military time");
+                    break;
+
+                case ("exact_time_pref"):
+                    break;
+
+                case ("vibration_pref"):
+                    break;
+
+                case ("vibration_frequency_pref"):
+                    break;
+            }
+        }
+    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        FragmentManager mFragmentManager = getFragmentManager();
+        FragmentTransaction mFragmentTransaction = mFragmentManager
+                .beginTransaction();
+        SettingsFragment mPrefsFragment = new SettingsFragment();
+        mFragmentTransaction.replace(android.R.id.content, mPrefsFragment);
+        mFragmentTransaction.commit();
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         setAlarm();
     }
@@ -41,11 +72,16 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        .getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(getApplicationContext());
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(listener);
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs.unregisterOnSharedPreferenceChangeListener(listener);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -69,23 +105,20 @@ public class SettingsActivity extends PreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
-            //TODO: add listener implementation
-        }
-    };
-    mPrefs.registerOnSharedPreferenceChangeListener(listener);
-
-
     public void setAlarm() {
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs.registerOnSharedPreferenceChangeListener(listener);
+
         Log.i("BenDroid/Settings", "SetAlarm called successfully");
         Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
-        mAlarmIntent.putExtra("singleVibration", false); //TODO: tie this to preferences
-        mAlarmIntent.putExtra("vibrationDuration", 500); //passing vibration duration to alarm receiver
+
+        mAlarmIntent.putExtra("singleVibration", mPrefs.getBoolean("vibration_frequency_pref", false));
+        mAlarmIntent.putExtra("vibrationDuration", mPrefs.getInt("vibration_pref", 200)); //passing vibration duration to alarm receiver
+
         mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //Creating alarm manager to make alarm service
-        //This saves battery and allows the com.enayet.bendroid thread to die but keep the service going
+        //This saves battery and and creates a separate thread to manage the alarm
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
         //setting starting time and periodic intervals of alarm
