@@ -23,4 +23,9 @@
     <string name="title_activity_settings">Settings</string>
     <string name="exact_pref_title">Exact timing</string>
     <string name="exact_pref_summary">Whether you want the vibrations to be exactly at whichever time interval you choose. This is more accurate with respect to time. If unchecked, the device will vibrate at a general approximation of the interval.</string>
+    <string name="notification_pref_summary">Sends a notification with each vibration</string>
+    <string name="notification_pref_title">Notifications</string>
+    <string name="service_on_summary">BenDroid is running and will send notifications with the preferences set</string>
+    <string name="service_off_summary">BenDroid is not running and will not send vibrations or notifications</string>
+    <string name="app_category">Application</string>
 </resources>

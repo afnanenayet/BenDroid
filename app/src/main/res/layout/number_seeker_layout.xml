@@ -12,7 +12,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:max="100"
-        android:scrollIndicators="start|end|top"
         android:indeterminate="false" />
 
     <TextView

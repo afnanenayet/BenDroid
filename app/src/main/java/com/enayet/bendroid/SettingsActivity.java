@@ -21,33 +21,18 @@ import java.util.Calendar;
 public class SettingsActivity extends AppCompatActivity {
 
     private PendingIntent mPendingIntent;
+
     SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
-            SettingsActivity mActivity = new SettingsActivity();
-            mActivity.setAlarm();
-
-            switch (key) {
-
-                case ("military_time_pref"):
-                    Log.i("Preferences", "Military time");
-                    break;
-
-                case ("exact_time_pref"):
-                    break;
-
-                case ("vibration_pref"):
-                    break;
-
-                case ("vibration_frequency_pref"):
-                    break;
-            }
+            setAlarm();
         }
     };
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        // Getting preference fragment and populating content of this activity with it
         FragmentManager mFragmentManager = getFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager
                 .beginTransaction();
@@ -59,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .commit();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+        // Starts the vibration alarm service when the activity begins
         setAlarm();
     }
 
@@ -72,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Registering preference listener so it won't get caught by garbage collection
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs.registerOnSharedPreferenceChangeListener(listener);
     }
@@ -79,6 +66,8 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        // Unregistering preference listener since we won't be using when the user isn't
+        // focused on the activity
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs.unregisterOnSharedPreferenceChangeListener(listener);
     }
@@ -97,7 +86,9 @@ public class SettingsActivity extends AppCompatActivity {
                    .show();
 
             return true;
-        } else if (id == R.id.stop_alarm) { //allows the users to stop the alarm service
+
+          // Temporary measure until a more pleasing stopping option is created
+        } else if (id == R.id.stop_alarm) {
             killAlarm();
             Toast.makeText(SettingsActivity.this, "Service stopped", Toast.LENGTH_SHORT).show();
         }
@@ -105,6 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Creates the Alarm service which specifies what times
     public void setAlarm() {
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs.registerOnSharedPreferenceChangeListener(listener);
@@ -113,7 +105,8 @@ public class SettingsActivity extends AppCompatActivity {
         Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
 
         mAlarmIntent.putExtra("singleVibration", mPrefs.getBoolean("vibration_frequency_pref", false));
-        mAlarmIntent.putExtra("vibrationDuration", mPrefs.getInt("vibration_pref", 200)); //passing vibration duration to alarm receiver
+        mAlarmIntent.putExtra("vibrationDuration", 50 /*mPrefs.getInt("vibration_pref", 2)*/); //passing vibration duration to alarm receiver
+        mAlarmIntent.putExtra("sendNotification", mPrefs.getBoolean("send_notification", true));
 
         mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -124,10 +117,17 @@ public class SettingsActivity extends AppCompatActivity {
         //setting starting time and periodic intervals of alarm
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        mCalendar.add(Calendar.SECOND, 0); // first time
-        long frequency = 60 * 1000; // in ms
+        mCalendar.add(Calendar.SECOND, 0); // first time TODO: tie this to mPrefs
+        long frequency = 60 * 1000; // in ms TODO tie this to mPrefs
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
+        if (mPrefs.getBoolean("exact_time_pref", true)) {
+            alarmManager.setRepeating(AlarmManager.RTC, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
+        }
+
+        else {
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
+        }
+
     }
 
     public void killAlarm() {
@@ -135,6 +135,6 @@ public class SettingsActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-        Log.i("BenDroid/Settings", "Alarm stopped succesfully");
+        Log.i("BenDroid/Settings", "Alarm stopped successfully");
     }
 }
