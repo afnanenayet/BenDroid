@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,13 +22,6 @@ import java.util.Calendar;
 public class SettingsActivity extends AppCompatActivity {
 
     private PendingIntent mPendingIntent;
-
-    SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
-            setAlarm();
-        }
-    };
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -95,6 +89,31 @@ public class SettingsActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
+            if (key.equals("is_service_enabled")) {
+                Log.i("listener", key);
+            }
+            setAlarm();
+
+        }
+    };
+
+    SwitchPreference sPref = (SwitchPreference) findViewById(R.id.); //TODO fix this shit
+    /*SharedPreferences.OnSharedPreferenceChangeListener mListener = new
+            SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                                      String key) {
+                    if (key == "is_service_enabled") {
+                        PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
+                        //TODO get value of key and either kill or start service accordingly
+                    }
+                    // your stuff here
+                }
+            };*/
 
     // Creates the Alarm service which specifies what times
     public void setAlarm() {
