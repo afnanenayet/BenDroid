@@ -9,19 +9,27 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.Calendar;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private PendingIntent mPendingIntent;
+    SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
+            if (mPrefs.getBoolean("is_service_enabled", true)) {
+                setAlarm();
+            } else {
+                killAlarm();
+            }
+        }
+    };
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -80,40 +88,9 @@ public class SettingsActivity extends AppCompatActivity {
                    .show();
 
             return true;
-
-          // Temporary measure until a more pleasing stopping option is created
-        } else if (id == R.id.stop_alarm) {
-            killAlarm();
-            Toast.makeText(SettingsActivity.this, "Service stopped", Toast.LENGTH_SHORT).show();
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-    SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences mPrefs, String key) {
-            if (key.equals("is_service_enabled")) {
-                Log.i("listener", key);
-            }
-            setAlarm();
-
-        }
-    };
-
-    SwitchPreference sPref = (SwitchPreference) findViewById(R.id.); //TODO fix this shit
-    /*SharedPreferences.OnSharedPreferenceChangeListener mListener = new
-            SharedPreferences.OnSharedPreferenceChangeListener() {
-                @Override
-                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                                                      String key) {
-                    if (key == "is_service_enabled") {
-                        PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-                        //TODO get value of key and either kill or start service accordingly
-                    }
-                    // your stuff here
-                }
-            };*/
 
     // Creates the Alarm service which specifies what times
     public void setAlarm() {
@@ -121,24 +98,30 @@ public class SettingsActivity extends AppCompatActivity {
         mPrefs.registerOnSharedPreferenceChangeListener(listener);
 
         Log.i("BenDroid/Settings", "SetAlarm called successfully");
+        //creating intent for alarm which will trigger vibration/notification
         Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
-
+        //whether app will vibrate once or reflect time
         mAlarmIntent.putExtra("singleVibration", mPrefs.getBoolean("vibration_frequency_pref", false));
         mAlarmIntent.putExtra("vibrationDuration", 50 /*mPrefs.getInt("vibration_pref", 2)*/); //passing vibration duration to alarm receiver
         mAlarmIntent.putExtra("sendNotification", mPrefs.getBoolean("send_notification", true));
 
-        mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Sets an intent which will send info to alarm receiver class, but will update an intent
+        // if one already exists
+        mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //Creating alarm manager to make alarm service
-        //This saves battery and and creates a separate thread to manage the alarm
+        // Creating alarm manager to make alarm service
+        // this saves battery and and creates a separate thread to manage the alarm
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
-        //setting starting time and periodic intervals of alarm
+        // Setting starting time and periodic intervals of alarm
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(System.currentTimeMillis());
-        mCalendar.add(Calendar.SECOND, 0); // first time TODO: tie this to mPrefs
+        // Sets offset for first instance of alarm
+        mCalendar.add(Calendar.SECOND, 0); // TODO: tie this to mPrefs
         long frequency = 60 * 1000; // in ms TODO tie this to mPrefs
 
+        // Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference
         if (mPrefs.getBoolean("exact_time_pref", true)) {
             alarmManager.setRepeating(AlarmManager.RTC, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
         }

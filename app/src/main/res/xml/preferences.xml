@@ -7,7 +7,7 @@
             android:key="is_service_enabled"
             android:summaryOff="@string/service_off_summary"
             android:summaryOn="@string/service_on_summary"
-            android:title="Service status" />
+            android:title="Enable notifications" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/general_category">

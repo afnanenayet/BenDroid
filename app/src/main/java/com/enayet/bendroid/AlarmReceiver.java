@@ -22,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Bundle extras = intent.getExtras();
 
         if (extras.getBoolean("sendNotification", true)) {
-            sendNotification(context, extras.getBoolean("notificationSound"));
+            sendNotification(context, extras.getBoolean("notificationSound"), "CHANGEME"); //TODO extract interval from user
         }
 
         int mDuration = extras.getInt("vibrationDuration"); //Gets duration int from broadcaster
@@ -31,18 +31,24 @@ public class AlarmReceiver extends BroadcastReceiver {
         mVibrator.cancel();
     }
 
-    private void sendNotification(Context context, boolean notificationSound) {
+    private void sendNotification(Context context, boolean notificationSound, String interval) {
+        final int LED_COLOR = 12211667; //sets the color of the notification led
+
         PendingIntent notificationIntent = PendingIntent.getActivity(context, 0,
                 new Intent (context, SettingsActivity.class), 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.notification_icon) //TODO fix padding on notification icon
+                .setColor(LED_COLOR) //sets LED color
                 .setContentTitle("Check the time!")
-                .setContentText("It's been INSERT INTERVAL HERE")
-                .setShowWhen(false);
+                .setContentText("It's been " + interval)
+                .setShowWhen(false); //deletes timestamp
 
         mBuilder.setContentIntent(notificationIntent);
-        mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+        if (notificationSound) {
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+        }
+
         mBuilder.setAutoCancel(true);
 
         NotificationManager mNotificationManager =
