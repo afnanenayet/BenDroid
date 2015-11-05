@@ -45,9 +45,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        // Starts the vibration alarm service when the activity begins
-        setAlarm();
     }
 
     @Override
