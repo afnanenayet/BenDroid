@@ -1,57 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sample="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/app_category">
-
         <SwitchPreference
             android:defaultValue="true"
             android:key="is_service_enabled"
             android:summaryOff="@string/service_off_summary"
             android:summaryOn="@string/service_on_summary"
-            android:title="Enable notifications" />
+            android:title="@string/sp_title" />
     </PreferenceCategory>
+
     <PreferenceCategory
         android:title="@string/general_category">
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="send_notification"
-            android:summary="@string/notification_pref_summary"
-            android:title="@string/notification_pref_title" />
-
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="vibration_frequency_pref"
             android:key="military_time_pref"
-            android:summary="@string/military_time_summary"
-            android:title="@string/military_time" />
+            android:title="@string/military_time"
+            android:summaryOn="@string/military_time_summary_on"
+            android:summaryOff="@string/military_time_summary_off"
+            />
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="exact_time_pref"
-            android:summary="@string/exact_pref_summary"
-            android:title="@string/exact_pref_title" />
+            android:title="@string/exact_pref_title"
+            android:summaryOn="@string/exact_pref_summary_on"
+            android:summaryOff="@string/exact_pref_summary_off"
+            />
 
+        <com.enayet.bendroid.TimePreference
+            android:key="first_time"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/notification_category">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="send_notification"
+            android:title="@string/notification_pref_title"
+            android:summaryOn="@string/notification_pref_summary_on"
+            android:summaryOff="@string/notification_pref_summary_off"
+            />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_sound_present"
+            android:title="@string/notification_sound_title"
+            android:summaryOn="@string/notification_sound_summary_on"
+            android:summaryOff="@string/notification_sound_summary_off"
+            />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="led_enabled"
+            android:summaryOn="@string/led_summary_on"
+            android:summaryOff="@string/led_summary_off"
+            android:title="@string/led_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="vibrate_notification"
+            android:title="@string/vibrate_title"
+            android:summaryOn="@string/vibrate_summary_on"
+            android:summaryOff="@string/vibrate_summary_off"/>
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/vibration_category">
 
-        <com.enayet.bendroid.numberSeekerPreference
-            android:defaultValue="50"
-            android:inputType="number"
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
             android:key="vibration_pref"
-            android:summary="@string/vibration_intensity_summary"
             android:title="@string/vibration_intensity"
-            />
+            android:summary="@string/vibration_intensity_summary"
+            android:enabled="true"
+            android:defaultValue="400"
+            sample:msbp_minValue="0"
+            sample:msbp_maxValue="2000"
+            sample:msbp_interval="10"
+            sample:msbp_measurementUnit="ms"/>
+
 
 
         <CheckBoxPreference
             android:disableDependentsState="true"
             android:key="vibration_frequency_pref"
-            android:summary="@string/vibration_frequency_summary"
-            android:title="@string/vibration_frequency" />
-
-
+            android:title="@string/vibration_frequency"
+            android:summaryOn="@string/vibration_frequency_summary_on"
+            android:summaryOff="@string/vibration_frequency_summary_off"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

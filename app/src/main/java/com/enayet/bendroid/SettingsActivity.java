@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TimePicker;
 
 import java.util.Calendar;
 
@@ -91,42 +93,51 @@ public class SettingsActivity extends AppCompatActivity {
 
     // Creates the Alarm service which specifies what times
     public void setAlarm() {
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mPrefs.registerOnSharedPreferenceChangeListener(listener);
+        //Parsing preferences in another thread to avoid hogging resources of main/UI thread
+        Handler mHandler = new Handler();
+        Runnable mRun = new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                mPrefs.registerOnSharedPreferenceChangeListener(listener);
 
-        Log.i("BenDroid/Settings", "SetAlarm called successfully");
-        //creating intent for alarm which will trigger vibration/notification
-        Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
-        //whether app will vibrate once or reflect time
-        mAlarmIntent.putExtra("singleVibration", mPrefs.getBoolean("vibration_frequency_pref", false));
-        mAlarmIntent.putExtra("vibrationDuration", 50 /*mPrefs.getInt("vibration_pref", 2)*/); //passing vibration duration to alarm receiver
-        mAlarmIntent.putExtra("sendNotification", mPrefs.getBoolean("send_notification", true));
+                Log.i("BenDroid/Service", "Alarm service set");
+                //creating intent for alarm which will trigger vibration/notification
+                Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
+                //whether app will vibrate once or reflect time
+                mAlarmIntent.putExtra("singleVibration", mPrefs.getBoolean("vibration_frequency_pref", false));
+                mAlarmIntent.putExtra("vibrationDuration", mPrefs.getInt("vibration_pref", 100)); //passing vibration duration to alarm receiver
+                mAlarmIntent.putExtra("sendNotification", mPrefs.getBoolean("send_notification", true));
+                mAlarmIntent.putExtra("shouldVibrate", mPrefs.getBoolean("vibrate_notification", false));
 
-        // Sets an intent which will send info to alarm receiver class, but will update an intent
-        // if one already exists
-        mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                // Sets an intent which will send info to alarm receiver class, but will update an intent
+                // if one already exists
+                mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Creating alarm manager to make alarm service
-        // this saves battery and and creates a separate thread to manage the alarm
-        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+                // Creating alarm manager to make alarm service
+                // this saves battery and and creates a separate thread to manage the alarm
+                AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
-        // Setting starting time and periodic intervals of alarm
-        Calendar mCalendar = Calendar.getInstance();
-        mCalendar.setTimeInMillis(System.currentTimeMillis());
-        // Sets offset for first instance of alarm
-        mCalendar.add(Calendar.SECOND, 0); // TODO: tie this to mPrefs
-        long frequency = 60 * 1000; // in ms TODO tie this to mPrefs
+                // Setting starting time and periodic intervals of alarm
+                Calendar mCalendar = Calendar.getInstance();
+                mCalendar.setTimeInMillis(System.currentTimeMillis());
+                // Sets offset for first instance of alarm
+                mCalendar.add(Calendar.SECOND, 0); // TODO: tie this to mPrefs
+                long frequency = 60 * 1000; // in ms TODO tie this to mPrefs
 
-        // Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference
-        if (mPrefs.getBoolean("exact_time_pref", true)) {
-            alarmManager.setRepeating(AlarmManager.RTC, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
-        }
+                // Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference
+                if (mPrefs.getBoolean("exact_time_pref", true)) {
+                    alarmManager.setRepeating(AlarmManager.RTC, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
+                }
 
-        else {
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
-        }
+                else {
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), frequency, mPendingIntent);
+                }
 
+            }
+        };
+        mHandler.postAtFrontOfQueue(mRun);
     }
 
     public void killAlarm() {
@@ -134,6 +145,6 @@ public class SettingsActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-        Log.i("BenDroid/Settings", "Alarm stopped successfully");
+        Log.i("BenDroid/Service", "Alarm service stopped");
     }
 }

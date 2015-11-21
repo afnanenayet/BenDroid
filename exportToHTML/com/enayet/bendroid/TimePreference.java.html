@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>TimePreference.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+TimePreference.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.enayet.bendroid; 
+ 
+</span><span class="s0">import </span><span class="s1">android.annotation.TargetApi; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.content.res.TypedArray; 
+</span><span class="s0">import </span><span class="s1">android.preference.DialogPreference; 
+</span><span class="s0">import </span><span class="s1">android.text.format.DateFormat; 
+</span><span class="s0">import </span><span class="s1">android.util.AttributeSet; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.widget.TimePicker; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.Calendar; 
+</span><span class="s0">import </span><span class="s1">java.util.Date; 
+</span><span class="s0">import </span><span class="s1">java.util.GregorianCalendar; 
+ 
+</span><span class="s0">public class </span><span class="s1">TimePreference </span><span class="s0">extends </span><span class="s1">DialogPreference { 
+    </span><span class="s0">protected </span><span class="s1">Calendar calendar; 
+    </span><span class="s0">protected </span><span class="s1">TimePicker picker; 
+ 
+ 
+    </span><span class="s0">public </span><span class="s1">TimePreference(Context ctxt, AttributeSet attrs) { 
+        </span><span class="s0">super</span><span class="s1">(ctxt, attrs); 
+        setDialogLayoutResource(R.layout.time_picker); 
+        setPositiveButtonText(R.string.action_set); 
+        setNegativeButtonText(R.string.action_cancel); 
+        picker = </span><span class="s0">new </span><span class="s1">TimePicker(ctxt); 
+        setPersistent(</span><span class="s0">false</span><span class="s1">); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">protected </span><span class="s1">View onCreateDialogView() { 
+        View view = </span><span class="s0">super</span><span class="s1">.onCreateDialogView(); 
+ 
+        </span><span class="s2">//picker = (TimePicker) view.findViewById(R.id.timePicker);</span><span class="s1"> 
+        picker.setIs24HourView(</span><span class="s0">true</span><span class="s1">); 
+        </span><span class="s0">return </span><span class="s1">view; 
+    } 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onBindDialogView(View v) { 
+        </span><span class="s0">super</span><span class="s1">.onBindDialogView(v); 
+ 
+</span><span class="s2">//        picker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));</span><span class="s1"> 
+  </span><span class="s2">//      picker.setCurrentMinute(calendar.get(Calendar.MINUTE));</span><span class="s1"> 
+    } 
+ 
+    @Override 
+    @TargetApi(</span><span class="s3">23</span><span class="s1">) 
+    </span><span class="s0">protected void </span><span class="s1">onDialogClosed(</span><span class="s0">boolean </span><span class="s1">positiveResult) { 
+        </span><span class="s0">super</span><span class="s1">.onDialogClosed(positiveResult); 
+ 
+        </span><span class="s0">if </span><span class="s1">(positiveResult) { 
+            calendar.set(Calendar.HOUR_OF_DAY, picker.getHour()); 
+            calendar.set(Calendar.MINUTE, picker.getMinute()); 
+ 
+            </span><span class="s2">/*if (callChangeListener(calendar.getTimeInMillis())) { 
+                persistLong(calendar.getTimeInMillis()); 
+                notifyChanged(); 
+            }*/</span><span class="s1"> 
+        } 
+    } 
+ 
+    @Override 
+    </span><span class="s0">protected </span><span class="s1">Object onGetDefaultValue(TypedArray a, </span><span class="s0">int </span><span class="s1">index) { 
+        </span><span class="s0">return </span><span class="s1">(a.getString(index)); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public </span><span class="s1">CharSequence getSummary() { 
+        </span><span class="s0">if </span><span class="s1">(calendar == </span><span class="s0">null</span><span class="s1">) { 
+            </span><span class="s0">return null</span><span class="s1">; 
+        } 
+        </span><span class="s0">return </span><span class="s1">DateFormat.getTimeFormat(getContext()).format(</span><span class="s0">new </span><span class="s1">Date(calendar.getTimeInMillis())); 
+    } 
+} 
+</span></pre>
+</body>
+</html>

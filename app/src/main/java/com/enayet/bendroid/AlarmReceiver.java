@@ -22,34 +22,43 @@ public class AlarmReceiver extends BroadcastReceiver {
         Bundle extras = intent.getExtras();
 
         if (extras.getBoolean("sendNotification", true)) {
-            sendNotification(context, extras.getBoolean("notificationSound"), "CHANGEME"); //TODO extract interval from user
+            sendNotification(context, extras.getBoolean("notificationSound", true), "CHANGEME"); //TODO extract interval from user
         }
 
-        int mDuration = extras.getInt("vibrationDuration"); //Gets duration int from broadcaster
-        Vibrator mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        mVibrator.vibrate(mDuration); //vibrate for milliseconds specified in argument
-        mVibrator.cancel();
+        if (extras.getBoolean("shouldVibrate", false)) {
+            Vibrator mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            mVibrator.vibrate(extras.getInt("vibrationDuration")); //vibrate for milliseconds specified in argument
+        }
     }
 
-    private void sendNotification(Context context, boolean notificationSound, String interval) {
-        final int LED_COLOR = 12211667; //sets the color of the notification led
+    private void sendNotification(Context context, boolean notificationSound, String intervalUnit) {
+        final int LED_COLOR = 12211667; //sets the color of the notification led (PURPLE)
+        Intent stopNotifications = new Intent();
+        stopNotifications.setAction("stop_notifications");
+        PendingIntent stopPending = PendingIntent.getBroadcast(context, 0, stopNotifications,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         PendingIntent notificationIntent = PendingIntent.getActivity(context, 0,
                 new Intent (context, SettingsActivity.class), 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.notification_icon) //TODO fix padding on notification icon
-                .setColor(LED_COLOR) //sets LED color
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLights(LED_COLOR, 200, 100)
+                .setColor(LED_COLOR) //sets notification background color
                 .setContentTitle("Check the time!")
-                .setContentText("It's been " + interval)
-                .setShowWhen(false); //deletes timestamp
+                .setContentText("It's been " + intervalUnit)
+                .setShowWhen(false)
+                .addAction(R.drawable.ic_stop_24dp,
+                        context.getResources().getString(R.string.quit_notifications), stopPending)
+                .setAutoCancel(true); //deletes timestamp TODO dismiss alarm from notification
 
         mBuilder.setContentIntent(notificationIntent);
+
+        // Adding notification properties from user preferences
         if (notificationSound) {
             mBuilder.setDefaults(Notification.DEFAULT_SOUND);
         }
-
-        mBuilder.setAutoCancel(true);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

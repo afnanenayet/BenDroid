@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>AlarmReceiver.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+.s3 { color: rgb(128,128,128); font-style: italic; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+AlarmReceiver.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.enayet.bendroid; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Notification; 
+</span><span class="s0">import </span><span class="s1">android.app.NotificationManager; 
+</span><span class="s0">import </span><span class="s1">android.app.PendingIntent; 
+</span><span class="s0">import </span><span class="s1">android.content.BroadcastReceiver; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.os.Vibrator; 
+</span><span class="s0">import </span><span class="s1">android.support.v4.app.NotificationCompat; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+ 
+</span><span class="s0">public class </span><span class="s1">AlarmReceiver </span><span class="s0">extends </span><span class="s1">BroadcastReceiver { 
+    </span><span class="s0">public </span><span class="s1">AlarmReceiver() { 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onReceive(Context context, Intent intent) { 
+        Log.i(</span><span class="s2">&quot;BenDroid/AlarmReceiver&quot;</span><span class="s1">, </span><span class="s2">&quot;Alarm received successfully&quot;</span><span class="s1">); </span><span class="s3">//TODO: remove</span><span class="s1"> 
+ 
+        Bundle extras = intent.getExtras(); 
+ 
+        </span><span class="s0">if </span><span class="s1">(extras.getBoolean(</span><span class="s2">&quot;sendNotification&quot;</span><span class="s1">, </span><span class="s0">true</span><span class="s1">)) { 
+            sendNotification(context, extras.getBoolean(</span><span class="s2">&quot;notificationSound&quot;</span><span class="s1">, </span><span class="s0">true</span><span class="s1">), </span><span class="s2">&quot;CHANGEME&quot;</span><span class="s1">); </span><span class="s3">//TODO extract interval from user</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">if </span><span class="s1">(extras.getBoolean(</span><span class="s2">&quot;shouldVibrate&quot;</span><span class="s1">, </span><span class="s0">false</span><span class="s1">)) { 
+            Vibrator mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE); 
+            mVibrator.vibrate(extras.getInt(</span><span class="s2">&quot;vibrationDuration&quot;</span><span class="s1">)); </span><span class="s3">//vibrate for milliseconds specified in argument</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">sendNotification(Context context, </span><span class="s0">boolean </span><span class="s1">notificationSound, String intervalUnit) { 
+        </span><span class="s0">final int </span><span class="s1">LED_COLOR = </span><span class="s4">12211667</span><span class="s1">; </span><span class="s3">//sets the color of the notification led (PURPLE)</span><span class="s1"> 
+        Intent stopNotifications = </span><span class="s0">new </span><span class="s1">Intent(); 
+        stopNotifications.setAction(</span><span class="s2">&quot;stop_notifications&quot;</span><span class="s1">); 
+        PendingIntent stopPending = PendingIntent.getBroadcast(context, </span><span class="s4">0</span><span class="s1">, stopNotifications, 
+                PendingIntent.FLAG_UPDATE_CURRENT); 
+ 
+ 
+        PendingIntent notificationIntent = PendingIntent.getActivity(context, </span><span class="s4">0</span><span class="s1">, 
+                </span><span class="s0">new </span><span class="s1">Intent (context, SettingsActivity.</span><span class="s0">class</span><span class="s1">), </span><span class="s4">0</span><span class="s1">); 
+ 
+        NotificationCompat.Builder mBuilder = </span><span class="s0">new </span><span class="s1">NotificationCompat.Builder(context) 
+                .setSmallIcon(R.drawable.ic_notification) 
+                .setLights(LED_COLOR, </span><span class="s4">200</span><span class="s1">, </span><span class="s4">100</span><span class="s1">) 
+                .setColor(LED_COLOR) </span><span class="s3">//sets notification background color</span><span class="s1"> 
+                .setContentTitle(</span><span class="s2">&quot;Check the time!&quot;</span><span class="s1">) 
+                .setContentText(</span><span class="s2">&quot;It's been &quot; </span><span class="s1">+ intervalUnit) 
+                .setShowWhen(</span><span class="s0">false</span><span class="s1">) 
+                .addAction(R.drawable.ic_stop_24dp, 
+                        context.getResources().getString(R.string.quit_notifications), stopPending) 
+                .setAutoCancel(</span><span class="s0">true</span><span class="s1">); </span><span class="s3">//deletes timestamp TODO dismiss alarm from notification</span><span class="s1"> 
+ 
+        mBuilder.setContentIntent(notificationIntent); 
+ 
+        </span><span class="s3">// Adding notification properties from user preferences</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(notificationSound) { 
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND); 
+        } 
+ 
+        NotificationManager mNotificationManager = 
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE); 
+        mNotificationManager.notify(</span><span class="s4">1</span><span class="s1">, mBuilder.build()); 
+    } 
+} 
+</span></pre>
+</body>
+</html>

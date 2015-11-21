@@ -1,0 +1,174 @@
+<html>
+<head>
+<title>SettingsActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+.s3 { color: rgb(128,128,128); font-style: italic; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+SettingsActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.enayet.bendroid; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.AlarmManager; 
+</span><span class="s0">import </span><span class="s1">android.app.FragmentManager; 
+</span><span class="s0">import </span><span class="s1">android.app.FragmentTransaction; 
+</span><span class="s0">import </span><span class="s1">android.app.PendingIntent; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.content.SharedPreferences; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.os.Handler; 
+</span><span class="s0">import </span><span class="s1">android.preference.PreferenceManager; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AlertDialog; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.view.Menu; 
+</span><span class="s0">import </span><span class="s1">android.view.MenuItem; 
+</span><span class="s0">import </span><span class="s1">android.widget.TimePicker; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.Calendar; 
+ 
+</span><span class="s0">public class </span><span class="s1">SettingsActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+ 
+    </span><span class="s0">private </span><span class="s1">PendingIntent mPendingIntent; 
+    SharedPreferences.OnSharedPreferenceChangeListener listener = </span><span class="s0">new </span><span class="s1">SharedPreferences.OnSharedPreferenceChangeListener() { 
+        @Override 
+        </span><span class="s0">public void </span><span class="s1">onSharedPreferenceChanged(SharedPreferences mPrefs, String key) { 
+            </span><span class="s0">if </span><span class="s1">(mPrefs.getBoolean(</span><span class="s2">&quot;is_service_enabled&quot;</span><span class="s1">, </span><span class="s0">true</span><span class="s1">)) { 
+                setAlarm(); 
+            } </span><span class="s0">else </span><span class="s1">{ 
+                killAlarm(); 
+            } 
+        } 
+    }; 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onPostCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onPostCreate(savedInstanceState); 
+        </span><span class="s3">// Getting preference fragment and populating content of this activity with it</span><span class="s1"> 
+        FragmentManager mFragmentManager = getFragmentManager(); 
+        FragmentTransaction mFragmentTransaction = mFragmentManager 
+                .beginTransaction(); 
+        SettingsFragment mPrefsFragment = </span><span class="s0">new </span><span class="s1">SettingsFragment(); 
+        mFragmentTransaction.replace(android.R.id.content, mPrefsFragment); 
+        mFragmentTransaction.commit(); 
+        getFragmentManager().beginTransaction() 
+                .replace(android.R.id.content, </span><span class="s0">new </span><span class="s1">SettingsFragment()) 
+                .commit(); 
+        PreferenceManager.setDefaultValues(</span><span class="s0">this</span><span class="s1">, R.xml.preferences, </span><span class="s0">false</span><span class="s1">); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public boolean </span><span class="s1">onCreateOptionsMenu(Menu menu) { 
+        </span><span class="s3">// Inflate the menu; this adds items to the action bar if it is present.</span><span class="s1"> 
+        getMenuInflater().inflate(R.menu.menu_settings, menu); 
+        </span><span class="s0">return true</span><span class="s1">; 
+    } 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onResume() { 
+        </span><span class="s0">super</span><span class="s1">.onResume(); 
+        </span><span class="s3">// Registering preference listener so it won't get caught by garbage collection</span><span class="s1"> 
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(</span><span class="s0">this</span><span class="s1">); 
+        mPrefs.registerOnSharedPreferenceChangeListener(listener); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onPause() { 
+        </span><span class="s0">super</span><span class="s1">.onPause(); 
+        </span><span class="s3">// Unregistering preference listener since we won't be using when the user isn't</span><span class="s1"> 
+        </span><span class="s3">// focused on the activity</span><span class="s1"> 
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(</span><span class="s0">this</span><span class="s1">); 
+        mPrefs.unregisterOnSharedPreferenceChangeListener(listener); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public boolean </span><span class="s1">onOptionsItemSelected(MenuItem item) { 
+        </span><span class="s0">int </span><span class="s1">id = item.getItemId(); 
+ 
+        </span><span class="s3">//noinspection SimplifiableIfStatement</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(id == R.id.action_about) { </span><span class="s3">//gives an informational dialog</span><span class="s1"> 
+           </span><span class="s0">new </span><span class="s1">AlertDialog.Builder(</span><span class="s0">this</span><span class="s1">) 
+                   .setTitle(R.string.dialog_about_title) 
+                   .setMessage(R.string.dialog_about_message) 
+                   .setCancelable(</span><span class="s0">true</span><span class="s1">) 
+                   .setPositiveButton(R.string.ok_label, </span><span class="s0">null</span><span class="s1">) 
+                   .show(); 
+ 
+            </span><span class="s0">return true</span><span class="s1">; 
+        } 
+        </span><span class="s0">return super</span><span class="s1">.onOptionsItemSelected(item); 
+    } 
+ 
+    </span><span class="s3">// Creates the Alarm service which specifies what times</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">setAlarm() { 
+        </span><span class="s3">//Parsing preferences in another thread to avoid hogging resources of main/UI thread</span><span class="s1"> 
+        Handler mHandler = </span><span class="s0">new </span><span class="s1">Handler(); 
+        Runnable mRun = </span><span class="s0">new </span><span class="s1">Runnable() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">run() { 
+                SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); 
+                mPrefs.registerOnSharedPreferenceChangeListener(listener); 
+ 
+                Log.i(</span><span class="s2">&quot;BenDroid/Service&quot;</span><span class="s1">, </span><span class="s2">&quot;Alarm service set&quot;</span><span class="s1">); 
+                </span><span class="s3">//creating intent for alarm which will trigger vibration/notification</span><span class="s1"> 
+                Intent mAlarmIntent = </span><span class="s0">new </span><span class="s1">Intent(SettingsActivity.</span><span class="s0">this</span><span class="s1">, AlarmReceiver.</span><span class="s0">class</span><span class="s1">); 
+                </span><span class="s3">//whether app will vibrate once or reflect time</span><span class="s1"> 
+                mAlarmIntent.putExtra(</span><span class="s2">&quot;singleVibration&quot;</span><span class="s1">, mPrefs.getBoolean(</span><span class="s2">&quot;vibration_frequency_pref&quot;</span><span class="s1">, </span><span class="s0">false</span><span class="s1">)); 
+                mAlarmIntent.putExtra(</span><span class="s2">&quot;vibrationDuration&quot;</span><span class="s1">, mPrefs.getInt(</span><span class="s2">&quot;vibration_pref&quot;</span><span class="s1">, </span><span class="s4">100</span><span class="s1">)); </span><span class="s3">//passing vibration duration to alarm receiver</span><span class="s1"> 
+                mAlarmIntent.putExtra(</span><span class="s2">&quot;sendNotification&quot;</span><span class="s1">, mPrefs.getBoolean(</span><span class="s2">&quot;send_notification&quot;</span><span class="s1">, </span><span class="s0">true</span><span class="s1">)); 
+                mAlarmIntent.putExtra(</span><span class="s2">&quot;shouldVibrate&quot;</span><span class="s1">, mPrefs.getBoolean(</span><span class="s2">&quot;vibrate_notification&quot;</span><span class="s1">, </span><span class="s0">false</span><span class="s1">)); 
+ 
+                </span><span class="s3">// Sets an intent which will send info to alarm receiver class, but will update an intent</span><span class="s1"> 
+                </span><span class="s3">// if one already exists</span><span class="s1"> 
+                mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s4">0</span><span class="s1">, mAlarmIntent, 
+                        PendingIntent.FLAG_UPDATE_CURRENT); 
+ 
+                </span><span class="s3">// Creating alarm manager to make alarm service</span><span class="s1"> 
+                </span><span class="s3">// this saves battery and and creates a separate thread to manage the alarm</span><span class="s1"> 
+                AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE); 
+ 
+                </span><span class="s3">// Setting starting time and periodic intervals of alarm</span><span class="s1"> 
+                Calendar mCalendar = Calendar.getInstance(); 
+                mCalendar.setTimeInMillis(System.currentTimeMillis()); 
+                </span><span class="s3">// Sets offset for first instance of alarm</span><span class="s1"> 
+                mCalendar.add(Calendar.SECOND, </span><span class="s4">0</span><span class="s1">); </span><span class="s3">// TODO: tie this to mPrefs</span><span class="s1"> 
+                </span><span class="s0">long </span><span class="s1">frequency = </span><span class="s4">60 </span><span class="s1">* </span><span class="s4">1000</span><span class="s1">; </span><span class="s3">// in ms TODO tie this to mPrefs</span><span class="s1"> 
+ 
+                </span><span class="s3">// Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(mPrefs.getBoolean(</span><span class="s2">&quot;exact_time_pref&quot;</span><span class="s1">, </span><span class="s0">true</span><span class="s1">)) { 
+                    alarmManager.setRepeating(AlarmManager.RTC, mCalendar.getTimeInMillis(), frequency, mPendingIntent); 
+                } 
+ 
+                </span><span class="s0">else </span><span class="s1">{ 
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar.getTimeInMillis(), frequency, mPendingIntent); 
+                } 
+ 
+            } 
+        }; 
+        mHandler.postAtFrontOfQueue(mRun); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">killAlarm() { 
+        Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, AlarmReceiver.</span><span class="s0">class</span><span class="s1">); 
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), </span><span class="s4">0</span><span class="s1">, intent, </span><span class="s4">0</span><span class="s1">); 
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE); 
+        alarmManager.cancel(pendingIntent); 
+        Log.i(</span><span class="s2">&quot;BenDroid/Service&quot;</span><span class="s1">, </span><span class="s2">&quot;Alarm service stopped&quot;</span><span class="s1">); 
+    } 
+} 
+</span></pre>
+</body>
+</html>

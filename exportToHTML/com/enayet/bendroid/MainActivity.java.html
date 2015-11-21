@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(0,128,0); font-weight: bold; }
+.s3 { color: rgb(128,128,128); font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+MainActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">com.enayet.bendroid; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.content.SharedPreferences; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.preference.PreferenceManager; 
+</span><span class="s0">import </span><span class="s1">android.support.v7.app.AppCompatActivity; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+ 
+</span><span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity { 
+    SharedPreferences mPrefs; 
+    </span><span class="s0">final </span><span class="s1">String firstView = </span><span class="s2">&quot;welcomeScreenShown&quot;</span><span class="s1">; 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(</span><span class="s0">this</span><span class="s1">); 
+        Boolean initialView = mPrefs.getBoolean(firstView, </span><span class="s0">true</span><span class="s1">); 
+ 
+        </span><span class="s0">if </span><span class="s1">(!initialView) { 
+            switchToSettings(); 
+        } 
+ 
+        </span><span class="s0">else </span><span class="s1">{ 
+            SharedPreferences.Editor editor = mPrefs.edit(); 
+            editor.putBoolean(firstView, </span><span class="s0">false</span><span class="s1">); 
+            editor.commit(); </span><span class="s3">//using commit to apply preference immediately (this is a pretty quick, critical thing)</span><span class="s1"> 
+            setContentView(R.layout.activity_main); 
+        } 
+ 
+ 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">closeInit(View view) { 
+        switchToSettings(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">switchToSettings() { 
+        Intent activityIntent = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, SettingsActivity.</span><span class="s0">class</span><span class="s1">); 
+        startActivity(activityIntent); 
+        finish(); 
+    } 
+} 
+</span></pre>
+</body>
+</html>
