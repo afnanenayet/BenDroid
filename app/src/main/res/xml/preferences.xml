@@ -29,9 +29,13 @@
             android:summaryOff="@string/exact_pref_summary_off"
             />
 
-        <com.enayet.bendroid.TimePreference
-            android:key="first_time"
-            />
+        <ListPreference
+            android:key="interval_pref"
+            android:title="@string/interval_pref_title"
+            android:summary="@string/interval_pref_summary"
+            android:entries="@array/interval_pref_choices"
+            android:entryValues="@array/interval_pref_values"
+                />
     </PreferenceCategory>
 
     <PreferenceCategory

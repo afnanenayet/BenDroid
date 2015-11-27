@@ -36,6 +36,29 @@
     <string name="sp_title">Enable notifications</string>
     <string name="quit_notifications">Stop</string>
 
+    <string name="interval_pref_title">Chime interval</string>
+    <string name="interval_pref_summary">Choose how much time will be present in between chimes</string>
+    <string-array name="interval_pref_choices">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>45 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
+        <item>4 hours</item>
+    </string-array>
+
+    <string-array name="interval_pref_values">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>120</item>
+        <item>180</item>
+        <item>240</item>
+    </string-array>
+
+
     <string name="notification_category">Notifications</string>
     <!--Notification category-->
     <string name="app_category">Application</string>

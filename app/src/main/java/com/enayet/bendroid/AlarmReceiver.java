@@ -22,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Bundle extras = intent.getExtras();
 
         if (extras.getBoolean("sendNotification", true)) {
-            sendNotification(context, extras.getBoolean("notificationSound", true), "CHANGEME"); //TODO extract interval from user
+            sendNotification(context, extras.getBoolean("notificationSound", true), extras.getString("intervalUnit"));
         }
 
         if (extras.getBoolean("shouldVibrate", false)) {
@@ -42,12 +42,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent notificationIntent = PendingIntent.getActivity(context, 0,
                 new Intent (context, SettingsActivity.class), 0);
 
+        // TODO add pending intent/receiver for broadcast of "stop" action to stopButtonListener
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLights(LED_COLOR, 200, 100)
                 .setColor(LED_COLOR) //sets notification background color
                 .setContentTitle("Check the time!")
-                .setContentText("It's been " + intervalUnit)
+                .setContentText("It's been " + intervalUnit + " minutes")
                 .setShowWhen(false)
                 .addAction(R.drawable.ic_stop_24dp,
                         context.getResources().getString(R.string.quit_notifications), stopPending)

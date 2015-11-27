@@ -9,13 +9,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.ListPreference;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TimePicker;
 
 import java.util.Calendar;
 
@@ -110,6 +111,8 @@ public class SettingsActivity extends AppCompatActivity {
                 mAlarmIntent.putExtra("sendNotification", mPrefs.getBoolean("send_notification", true));
                 mAlarmIntent.putExtra("shouldVibrate", mPrefs.getBoolean("vibrate_notification", false));
 
+                mAlarmIntent.putExtra("intervalUnit", mPrefs.getString("interval_pref", "15 minutes"));
+
                 // Sets an intent which will send info to alarm receiver class, but will update an intent
                 // if one already exists
                 mPendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, 0, mAlarmIntent,
@@ -123,8 +126,9 @@ public class SettingsActivity extends AppCompatActivity {
                 Calendar mCalendar = Calendar.getInstance();
                 mCalendar.setTimeInMillis(System.currentTimeMillis());
                 // Sets offset for first instance of alarm
-                mCalendar.add(Calendar.SECOND, 0); // TODO: tie this to mPrefs
-                long frequency = 60 * 1000; // in ms TODO tie this to mPrefs
+                mCalendar.add(Calendar.SECOND, 0);
+                int minutes = Integer.parseInt(mPrefs.getString("interval_pref", "15"));
+                long frequency = minutes * 60000; // in minutes
 
                 // Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference
                 if (mPrefs.getBoolean("exact_time_pref", true)) {
