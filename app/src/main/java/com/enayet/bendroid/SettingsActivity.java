@@ -101,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
                         .getDefaultSharedPreferences(getApplicationContext());
                 mPrefs.registerOnSharedPreferenceChangeListener(listener);
 
-                Log.i("BenDroid/Service", "Alarm service set");
+                Log.d("BenDroid/Service", "Alarm service set");
                 //creating intent for alarm which will trigger vibration/notification
                 Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
                 //whether app will vibrate once or reflect time
@@ -130,8 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
                 mCalendar.setTimeInMillis(System.currentTimeMillis());
                 // Sets offset for first instance of alarm
                 int minutes = Integer.parseInt(mPrefs.getString("interval_pref", "15"));
-                //int frequency = minutes * 60000; // in ms
-                int frequency = 10;
+                int frequency = minutes * 60000; // in ms
                 mCalendar.add(Calendar.SECOND, 0);
 
                 // Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference
@@ -153,6 +152,6 @@ public class SettingsActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-        Log.i("BenDroid/Service", "Alarm service stopped");
+        Log.d("BenDroid/Service", "Alarm service stopped");
     }
 }
