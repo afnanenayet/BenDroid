@@ -17,12 +17,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("BenDroid/AlarmReceiver", "Alarm received successfully"); //TODO: remove
+        Log.d("BenDroid/AlarmReceiver", "Alarm received");
 
         Bundle extras = intent.getExtras();
 
         if (extras.getBoolean("sendNotification", true)) {
-            sendNotification(context, extras.getBoolean("notificationSound", true), extras.getString("intervalUnit"));
+            sendNotification(context, extras.getBoolean("notificationSound", true),
+                    extras.getString("intervalUnit"));
         }
 
         if (extras.getBoolean("shouldVibrate", false)) {
@@ -33,28 +34,33 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void sendNotification(Context context, boolean notificationSound, String intervalUnit) {
         final int LED_COLOR = 12211667; //sets the color of the notification led (PURPLE)
-        Intent stopNotifications = new Intent();
+        Intent stopNotifications = new Intent(context, stopButtonListener.class);
         stopNotifications.setAction("stop_notifications");
         PendingIntent stopPending = PendingIntent.getBroadcast(context, 0, stopNotifications,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-
         PendingIntent notificationIntent = PendingIntent.getActivity(context, 0,
                 new Intent (context, SettingsActivity.class), 0);
 
-        // TODO add pending intent/receiver for broadcast of "stop" action to stopButtonListener
+        String mNotifText;
+
+        if (Integer.parseInt(intervalUnit) < 60) {
+            mNotifText = "It's been " + intervalUnit + " minutes";
+        } else {
+            mNotifText = "It's been " + (Float.parseFloat(intervalUnit) / 60) + " minutes";
+        }
+
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLights(LED_COLOR, 200, 100)
                 .setColor(LED_COLOR) //sets notification background color
                 .setContentTitle("Check the time!")
-                .setContentText("It's been " + intervalUnit + " minutes")
+                .setContentText(mNotifText)
                 .setShowWhen(false)
                 .addAction(R.drawable.ic_stop_24dp,
                         context.getResources().getString(R.string.quit_notifications), stopPending)
-                .setAutoCancel(true); //deletes timestamp TODO dismiss alarm from notification
-
+                .setAutoCancel(true); //deletes timestamp
         mBuilder.setContentIntent(notificationIntent);
 
         // Adding notification properties from user preferences

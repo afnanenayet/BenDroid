@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
-    SharedPreferences mPrefs;
     final String firstView = "welcomeScreenShown";
+    SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             SharedPreferences.Editor editor = mPrefs.edit();
             editor.putBoolean(firstView, false);
-            editor.commit(); //using commit to apply preference immediately (this is a pretty quick, critical thing)
+            editor.apply();
             setContentView(R.layout.activity_main);
         }
 
