@@ -114,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity {
                 mAlarmIntent.putExtra("shouldVibrate", mPrefs
                         .getBoolean("vibrate_notification", false));
 
-                mAlarmIntent.putExtra("intervalUnit", mPrefs.getString("interval_pref", "15 minutes"));
+                mAlarmIntent.putExtra("intervalUnit", mPrefs.getString("interval_pref", "15"));
 
                 // Sets an intent which will send info to alarm receiver class, but will update an intent
                 // if one already exists
