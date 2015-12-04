@@ -75,4 +75,18 @@
     <!--Status bar notification-->
     <string name="action_set">Set</string>
     <string name="action_cancel">Cancel</string>
+
+    <!--Preference keys-->
+    <string name="key_military_time_pref">military_time_pref</string>
+    <string name="key_exact_time_pref">exact_time_pref</string>
+    <string name="key_interval_pref">interval_pref</string>
+    <string name="key_send_notification">send_notification</string>
+    <string name="key_notification_sound_present">notification_sound_preference</string>
+    <string name="key_led_enabled">led_enabled</string>
+    <string name="key_vibrate_notification">vibrate_notification</string>
+    <string name="key_vibration_pref">vibration_pref</string>
+    <string name="key_vibration_frequency_pref">vibration_frequency_pref</string>
+
+    <string name="vibration_unit">ms</string>
+
 </resources>

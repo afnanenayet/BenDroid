@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         FragmentTransaction mFragmentTransaction = mFragmentManager
                 .beginTransaction();
         SettingsFragment mPrefsFragment = new SettingsFragment();
-        mFragmentTransaction.replace(android.R.id.content, mPrefsFragment, "SETTINGS_FRAGMENT");
+        mFragmentTransaction.replace(android.R.id.content, mPrefsFragment, "FRAGMENT_SETTINGS");
         mFragmentTransaction.commit();
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
@@ -92,29 +92,38 @@ public class SettingsActivity extends AppCompatActivity {
 
     // Creates the Alarm service which specifies what times
     public void setAlarm() {
-        //Parsing preferences in another thread to avoid hogging resources of main/UI thread
+        // Parsing preferences in another thread to avoid hogging resources of main/UI thread
         Handler mHandler = new Handler();
         Runnable mRun = new Runnable() {
+
             @Override
             public void run() {
                 SharedPreferences mPrefs = PreferenceManager
                         .getDefaultSharedPreferences(getApplicationContext());
                 mPrefs.registerOnSharedPreferenceChangeListener(listener);
 
+                // Preference IDs
+                final String vibrationFrequency = getString(R.string.key_vibration_frequency_pref);
+                final String vibrationDuration = getString(R.string.key_vibration_pref);
+                final String notificationPreference = getString(R.string.key_send_notification);
+                final String vibrationPreference = getString(R.string.key_vibrate_notification);
+                final String intervalPreference = getString(R.string.key_interval_pref);
+                final String exactTimePreference = getString(R.string.key_exact_time_pref);
+
                 Log.d("BenDroid/Service", "Alarm service set");
                 //creating intent for alarm which will trigger vibration/notification
                 Intent mAlarmIntent = new Intent(SettingsActivity.this, AlarmReceiver.class);
                 //whether app will vibrate once or reflect time
                 mAlarmIntent.putExtra("singleVibration", mPrefs
-                        .getBoolean("vibration_frequency_pref", false));
+                        .getBoolean(vibrationFrequency, false));
                 mAlarmIntent.putExtra("vibrationDuration", mPrefs
-                        .getInt("vibration_pref", 100)); //passing vibration duration to alarm receiver
+                        .getInt(vibrationDuration, 100)); //passing vibration duration to alarm receiver
                 mAlarmIntent.putExtra("sendNotification", mPrefs
-                        .getBoolean("send_notification", true));
+                        .getBoolean(notificationPreference, true));
                 mAlarmIntent.putExtra("shouldVibrate", mPrefs
-                        .getBoolean("vibrate_notification", false));
+                        .getBoolean(vibrationPreference, false));
 
-                mAlarmIntent.putExtra("intervalUnit", mPrefs.getString("interval_pref", "15 minutes"));
+                mAlarmIntent.putExtra("intervalUnit", mPrefs.getString(intervalPreference, "15"));
 
                 // Sets an intent which will send info to alarm receiver class, but will update an intent
                 // if one already exists
@@ -129,19 +138,18 @@ public class SettingsActivity extends AppCompatActivity {
                 Calendar mCalendar = Calendar.getInstance();
                 mCalendar.setTimeInMillis(System.currentTimeMillis());
                 // Sets offset for first instance of alarm
-                int minutes = Integer.parseInt(mPrefs.getString("interval_pref", "15"));
+                int minutes = Integer.parseInt(mPrefs.getString(intervalPreference, "15"));
                 int frequency = minutes * 60000; // in ms
                 mCalendar.add(Calendar.SECOND, 0);
 
                 // Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference
-                if (mPrefs.getBoolean("exact_time_pref", true)) {
+                if (mPrefs.getBoolean(exactTimePreference, true)) {
                     alarmManager.setRepeating(AlarmManager.RTC, mCalendar
                             .getTimeInMillis(), frequency, mPendingIntent);
                 } else {
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, mCalendar
                             .getTimeInMillis(), frequency, mPendingIntent);
                 }
-
             }
         };
         mHandler.postAtFrontOfQueue(mRun);

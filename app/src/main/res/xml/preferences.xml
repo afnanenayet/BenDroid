@@ -15,26 +15,28 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="vibration_frequency_pref"
-            android:key="military_time_pref"
-            android:title="@string/military_time"
-            android:summaryOn="@string/military_time_summary_on"
+            android:key="@string/key_military_time_pref"
             android:summaryOff="@string/military_time_summary_off"
+            android:summaryOn="@string/military_time_summary_on"
+            android:title="@string/military_time"
             />
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="exact_time_pref"
-            android:title="@string/exact_pref_title"
-            android:summaryOn="@string/exact_pref_summary_on"
+            android:key="@string/key_exact_time_pref"
             android:summaryOff="@string/exact_pref_summary_off"
+            android:summaryOn="@string/exact_pref_summary_on"
+            android:title="@string/exact_pref_title"
             />
 
+        <!--Not sure if default value is valid (15)-->
         <ListPreference
-            android:key="interval_pref"
-            android:title="@string/interval_pref_title"
-            android:summary="@string/interval_pref_summary"
+            android:defaultValue="15"
             android:entries="@array/interval_pref_choices"
             android:entryValues="@array/interval_pref_values"
+            android:key="@string/key_interval_pref"
+            android:summary="@string/interval_pref_summary"
+            android:title="@string/interval_pref_title"
                 />
     </PreferenceCategory>
 
@@ -43,57 +45,54 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="send_notification"
-            android:title="@string/notification_pref_title"
-            android:summaryOn="@string/notification_pref_summary_on"
+            android:key="@string/key_send_notification"
             android:summaryOff="@string/notification_pref_summary_off"
+            android:summaryOn="@string/notification_pref_summary_on"
+            android:title="@string/notification_pref_title"
             />
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="notification_sound_present"
-            android:title="@string/notification_sound_title"
-            android:summaryOn="@string/notification_sound_summary_on"
+            android:key="@string/key_notification_sound_present"
             android:summaryOff="@string/notification_sound_summary_off"
+            android:summaryOn="@string/notification_sound_summary_on"
+            android:title="@string/notification_sound_title"
             />
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="led_enabled"
-            android:summaryOn="@string/led_summary_on"
+            android:key="@string/key_led_enabled"
             android:summaryOff="@string/led_summary_off"
+            android:summaryOn="@string/led_summary_on"
             android:title="@string/led_title" />
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="vibrate_notification"
-            android:title="@string/vibrate_title"
+            android:key="@string/key_vibrate_notification"
+            android:summaryOff="@string/vibrate_summary_off"
             android:summaryOn="@string/vibrate_summary_on"
-            android:summaryOff="@string/vibrate_summary_off"/>
+            android:title="@string/vibrate_title" />
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/vibration_category">
 
         <com.pavelsikun.seekbarpreference.SeekBarPreference
-            android:key="vibration_pref"
-            android:title="@string/vibration_intensity"
-            android:summary="@string/vibration_intensity_summary"
-            android:enabled="true"
             android:defaultValue="400"
-            sample:msbp_minValue="0"
-            sample:msbp_maxValue="2000"
+            android:enabled="true"
+            android:key="@string/key_vibration_pref"
+            android:summary="@string/vibration_intensity_summary"
+            android:title="@string/vibration_intensity"
             sample:msbp_interval="10"
-            sample:msbp_measurementUnit="ms"/>
-
-
+            sample:msbp_maxValue="2000"
+            sample:msbp_measurementUnit="@string/vibration_unit"
+            sample:msbp_minValue="0" />
 
         <CheckBoxPreference
             android:disableDependentsState="true"
-            android:key="vibration_frequency_pref"
-            android:title="@string/vibration_frequency"
+            android:key="@string/key_vibration_frequency_pref"
+            android:summaryOff="@string/vibration_frequency_summary_off"
             android:summaryOn="@string/vibration_frequency_summary_on"
-            android:summaryOff="@string/vibration_frequency_summary_off"/>
+            android:title="@string/vibration_frequency" />
     </PreferenceCategory>
-
 </PreferenceScreen>
