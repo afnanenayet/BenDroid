@@ -10,7 +10,9 @@
     <string name="service_terminated">BenDroid successfully quit</string>
     <string name="vibration_toast">Check the time!</string>
     <string name="stop_menu_title">Stop</string>
+
     <!--Preferences-->
+
     <string name="vibration_category">Vibration</string>
     <!--Vibration category-->
     <string name="vibration_intensity">Vibration intensity</string>
@@ -58,6 +60,11 @@
         <item>240</item>
     </string-array>
 
+    <string-array name="interval_unit_choices">
+        <item>minutes</item>
+        <item>hours</item>
+        <item>days</item>
+    </string-array>
 
     <string name="notification_category">Notifications</string>
     <!--Notification category-->
@@ -88,5 +95,4 @@
     <string name="key_vibration_frequency_pref">vibration_frequency_pref</string>
 
     <string name="vibration_unit">ms</string>
-
 </resources>

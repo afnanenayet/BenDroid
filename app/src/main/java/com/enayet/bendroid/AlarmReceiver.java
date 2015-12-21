@@ -42,20 +42,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent notificationIntent = PendingIntent.getActivity(context, 0,
                 new Intent (context, SettingsActivity.class), 0);
 
-        String mNotifText;
-
-        if (Integer.parseInt(intervalUnit) < 60) {
-            mNotifText = "It's been " + intervalUnit + " minutes";
-        } else {
-            mNotifText = "It's been " + (Float.parseFloat(intervalUnit) / 60) + " minutes";
-        }
-
+        String mNotifText = "It's been " + intervalUnit + "!";
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLights(LED_COLOR, 200, 100)
                 .setColor(LED_COLOR) //sets notification background color
-                .setContentTitle("Check the time!")
+                .setContentTitle("Check the time")
                 .setContentText(mNotifText)
                 .setShowWhen(false)
                 .addAction(R.drawable.ic_stop_24dp,

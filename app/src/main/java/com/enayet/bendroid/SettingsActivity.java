@@ -123,7 +123,24 @@ public class SettingsActivity extends AppCompatActivity {
                 mAlarmIntent.putExtra("shouldVibrate", mPrefs
                         .getBoolean(vibrationPreference, false));
 
-                mAlarmIntent.putExtra("intervalUnit", mPrefs.getString(intervalPreference, "15"));
+                float intervalMinutes = Float.parseFloat(mPrefs.getString(intervalPreference, "15"));
+                String intervalIntent;
+
+                if (intervalMinutes < 60) {
+                    intervalIntent = Integer.toString(Math.round(intervalMinutes)) + " minutes";
+                }
+                else {
+                    float hours = intervalMinutes / 60;
+
+                    if (hours == 1) {
+                        intervalIntent = "1 hour";
+                    }
+                    else {
+                        intervalIntent = Float.toString(hours) + " hours";
+                    }
+                }
+
+                mAlarmIntent.putExtra("intervalUnit", intervalIntent);
 
                 // Sets an intent which will send info to alarm receiver class, but will update an intent
                 // if one already exists
@@ -138,8 +155,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Calendar mCalendar = Calendar.getInstance();
                 mCalendar.setTimeInMillis(System.currentTimeMillis());
                 // Sets offset for first instance of alarm
-                int minutes = Integer.parseInt(mPrefs.getString(intervalPreference, "15"));
-                int frequency = minutes * 60000; // in ms
+                int frequency = Math.round(intervalMinutes) * 60000; // in ms
                 mCalendar.add(Calendar.SECOND, 0);
 
                 // Whether app will create a wakelock (RTC_WAKEUP) or not based on user preference
