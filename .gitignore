@@ -7,3 +7,9 @@
 /captures
 
 app/src/main/java/com/enayet/bendroid/mBackupAgent.java
+
+app/build.gradle
+
+*.apk
+
+app/build.gradle

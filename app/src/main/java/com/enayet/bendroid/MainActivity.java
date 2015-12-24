@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     final String firstView = "welcomeScreenShown";
@@ -27,17 +26,11 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
             setContentView(R.layout.activity_main);
         }
-
-
-    }
-
-    public void closeInit(View view) {
-        switchToSettings();
     }
 
     public void switchToSettings() {
-        Intent activityIntent = new Intent(this, SettingsActivity.class);
-        startActivity(activityIntent);
-        finish();
+        Intent activityIntent = new Intent(this, SettingsActivity.class); // activity transaction with intent
+            startActivity(activityIntent);
+        finish(); // destroying current activity to free memory (we're not using this anymore)
     }
 }
